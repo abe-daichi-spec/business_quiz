@@ -98,7 +98,7 @@
   <div class="status-bar">
     <div class="char-icon" id="charIcon">🥚</div>
     <div class="char-info">
-      <input type="text" id="playerName" placeholder="名前を入力（任意）" onblur="lockName()">
+      <input type="text" id="playerName" placeholder="名前を入力（必須）" onblur="lockName()">
       <div class="char-name" id="charName">Lv.1 まなびのたまご</div>
       <div class="char-next" id="charNext">あと ? 問で進化</div>
     </div>
@@ -203,7 +203,10 @@ function nextQ(){
   updateUI();
 }
 function answer(btn, choice){
-  if(answered) return; answered=true; count++; const ok=choice===current.a;
+  if (!$('playerName').value.trim()) {
+    alert('名前を入力してください');
+    return;
+  }  if(answered) return; answered=true; count++; const ok=choice===current.a;
   const buttons=[...document.querySelectorAll('.c-btn')]; buttons.forEach(b=>{ b.disabled=true; if(b.textContent===current.a) b.classList.add('correct'); });
   if(ok){ correct++; totalAcc++; learnedMap[keyOf(current)]=true; $('resultMsg').innerHTML='<span class="ok">正解！</span> '+escapeHtml(current.a); }
   else{ btn.classList.add('wrong'); addMistake(current); $('resultMsg').innerHTML='<span class="ng">不正解。</span> 正解は「'+escapeHtml(current.a)+'」'; }
@@ -223,8 +226,17 @@ function showClear(){
   $('quizArea').style.display='none'; $('stageClear').style.display='block'; $('progBar').style.width='100%';
   const rate=count?Math.round(correct/count*100):0; $('clearSub').innerHTML='今回の正解率：<b>'+rate+'%</b>（'+correct+' / '+count+'問）<br>続けると未習得問題を中心に復習できます。';
 }
-function nextLap(){ lap++; localStorage.setItem(STORE+'lap_'+currentCat+'_'+currentMode, String(lap)); buildDeck(); }
-function skipQ(){ if(!answered && current){ deckIdx++; nextQ(); } }
+function nextLap(){ 
+if (!$('playerName').value.trim()) {
+    alert('名前を入力してください');
+    return;
+  }
+  lap++; localStorage.setItem(STORE+'lap_'+currentCat+'_'+currentMode, String(lap)); buildDeck(); }
+function skipQ(){ 
+  if (!$('playerName').value.trim()) {
+    alert('名前を入力してください');
+    return;
+  }  if(!answered && current){ deckIdx++; nextQ(); } }
 function onFilterChange(){ currentCat=$('catSel').value; currentMode=$('modeSel').value; buildDeck(); }
 function resetAll(){ if(confirm('学習記録・苦手リスト・名前をすべてリセットしますか？')){ Object.keys(localStorage).filter(k=>k.startsWith(STORE)).forEach(k=>localStorage.removeItem(k)); playerName=''; totalAcc=0; learnedMap={}; mistakes=[]; $('playerName').value=''; $('playerName').readOnly=false; buildDeck(); } }
 function openMistake(){ renderMistakes(); $('mistakeModal').style.display='block'; }
