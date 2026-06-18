@@ -112,7 +112,7 @@
   <div class="toolbar">
     <select id="catSel" onchange="onFilterChange()"></select>
     <select id="modeSel" onchange="onFilterChange()">
-      <option value="all">すべて</option><option value="unlearned">未習得のみ</option><option value="learned">習得済のみ</option>
+      <option value="all">すべて</option><option value="unlearned">未習得のみ
     </select>
     <button id="mistakeBtn" class="act-btn" onclick="openMistake()">⚠️ 苦手（<span id="mistakeCnt">0</span>）</button>
     <button class="act-btn list-btn" onclick="openTermList()">📘 用語一覧</button>
@@ -182,7 +182,6 @@ function filteredBase(){
   return DATA.filter(x=>{
     if(currentCat!=='all' && x.cat!==currentCat) return false;
     const learned=!!learnedMap[keyOf(x)];
-    if(currentMode==='learned' && !learned) return false;
     if(currentMode==='unlearned' && learned) return false;
     return true;
   });
